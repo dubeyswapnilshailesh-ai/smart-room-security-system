@@ -1,0 +1,24 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Mon Oct 12 16:54:53 2026
+[*]
+[dumpfile] "C:\Users\Dell\OneDrive\Desktop\Security Project\security.vcd"
+[dumpfile_mtime] "Mon Oct 12 16:41:17 2026"
+[dumpfile_size] 471
+[savefile] "C:\Users\Dell\OneDrive\Desktop\Security Project\Smart_Room_Security_System.gtkw"
+[timestart] 0
+[size] 1280 649
+[pos] -35 -35
+*-3.606946 22 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 197
+[signals_width] 142
+[sst_expanded] 1
+[sst_vpaned_height] 170
+@28
+security_system.access_granted
+security_system.alarm
+security_system.door_open
+security_system.password_ok
+security_system.system_armed
+[pattern_trace] 1
+[pattern_trace] 0

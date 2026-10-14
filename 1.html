@@ -1,0 +1,733 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#08111f">
+<meta name="description" content="Smart Room Security System — interactive security monitoring dashboard.">
+<title>Sentinel | Smart Security System</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:#08111f;
+  --panel:#101c2d;
+  --panel2:#132238;
+  --border:#24354b;
+  --text:#edf4ff;
+  --muted:#8fa3bd;
+  --cyan:#42d9ef;
+  --green:#37d99a;
+  --red:#ff5d73;
+  --yellow:#ffc766;
+  --radius:17px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.app{display:flex;min-height:100vh}
+.sidebar{
+  width:245px;flex-shrink:0;padding:26px 17px;
+  background:#0b1626;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:29px;
+}
+.brand{display:flex;align-items:center;gap:12px;padding:0 9px}
+.brand-icon{
+  width:43px;height:43px;border-radius:13px;
+  display:grid;place-items:center;background:#16384a;
+  color:var(--cyan);font-size:23px;border:1px solid #285269;
+}
+.brand h1{font:700 21px 'Space Grotesk',sans-serif;letter-spacing:-.6px}
+.brand p{font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:3px}
+.nav-label{font-size:10px;color:#60748d;font-weight:700;letter-spacing:1.7px;padding:0 12px 10px}
+.nav{display:grid;gap:5px}
+.nav button{
+  display:flex;align-items:center;gap:12px;width:100%;
+  border:1px solid transparent;background:transparent;
+  color:#9bacc3;padding:12px;border-radius:11px;text-align:left;
+  font-size:13px;transition:.2s;
+}
+.nav button:hover,.nav button.active{background:#14283c;color:var(--cyan);border-color:#234158}
+.nav .ico{width:21px;text-align:center;font-size:17px}
+.side-bottom{margin-top:auto}
+.connection{
+  border:1px solid var(--border);background:#101d2e;
+  border-radius:13px;padding:15px;
+}
+.connection-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 10px #37d99a65}
+.connection p{color:var(--muted);font-size:11px;line-height:1.6;margin-top:9px}
+.side-foot{font-size:10px;color:#62758e;margin:17px 5px 0;line-height:1.7}
+main{flex:1;min-width:0;padding:26px 32px 35px;max-width:1700px;margin:0 auto;width:100%}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:31px}
+.breadcrumb{font-size:12px;color:var(--muted)}
+.breadcrumb strong{color:var(--text);font-weight:500}
+.top-right{display:flex;align-items:center;gap:12px}
+.live-pill{
+  display:flex;align-items:center;gap:8px;border:1px solid #28523f;
+  background:#102a25;color:#80edbc;border-radius:30px;padding:8px 12px;font-size:11px;
+}
+.clock{font:500 13px 'Space Grotesk',sans-serif;color:#b5c4d8}
+.profile{
+  width:37px;height:37px;border-radius:50%;background:#203d59;
+  display:grid;place-items:center;border:1px solid #345574;font-size:13px;font-weight:700;
+}
+.heading-row{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:24px}
+.eyebrow{font-size:10px;letter-spacing:2px;color:var(--cyan);font-weight:700;margin-bottom:9px}
+h2{font:600 clamp(25px,3vw,34px) 'Space Grotesk',sans-serif;letter-spacing:-1px}
+.subtitle{color:var(--muted);font-size:13px;margin-top:8px;line-height:1.6}
+.date-label{font-size:11px;color:var(--muted);border:1px solid var(--border);padding:10px 12px;border-radius:9px;white-space:nowrap}
+.banner{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  background:linear-gradient(110deg,#132e43,#102033 70%,#11283b);
+  border:1px solid #25465c;border-radius:var(--radius);padding:22px 24px;margin-bottom:22px;
+  position:relative;overflow:hidden;
+}
+.banner:after{
+  content:"";position:absolute;right:80px;top:-100px;width:240px;height:240px;
+  border:1px solid #42d9ef16;border-radius:50%;box-shadow:0 0 0 35px #42d9ef08,0 0 0 70px #42d9ef05;
+  pointer-events:none;
+}
+.banner-left{display:flex;align-items:center;gap:17px;position:relative;z-index:1}
+.shield{
+  width:55px;height:55px;border-radius:16px;display:grid;place-items:center;
+  font-size:27px;background:#183f50;border:1px solid #2d6577;
+}
+.banner h3{font:600 18px 'Space Grotesk',sans-serif}
+.banner p{color:#a4b8ce;font-size:12px;margin-top:6px;line-height:1.6}
+.banner-state{text-align:right;position:relative;z-index:1}
+.banner-state span{display:block;color:#a4b8ce;font-size:10px;letter-spacing:1.3px;margin-bottom:5px}
+.banner-state strong{font:600 20px 'Space Grotesk',sans-serif;color:var(--green)}
+.banner.disarmed .shield{background:#352d20;border-color:#625035}
+.banner.disarmed .banner-state strong{color:var(--yellow)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:23px}
+.stat{
+  background:var(--panel);border:1px solid var(--border);border-radius:15px;
+  padding:19px;min-width:0;transition:border .2s;
+}
+.stat:hover{border-color:#3b5d79}
+.stat-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.stat-label{font-size:11px;color:var(--muted)}
+.stat-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:17px;background:#192f44}
+.stat-number{font:600 29px 'Space Grotesk',sans-serif;margin:15px 0 7px;letter-spacing:-1px}
+.stat-foot{font-size:10px;color:var(--muted)}
+.good{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--yellow)}.cyan{color:var(--cyan)}
+.content-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(290px,.9fr);gap:20px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-width:0}
+.panel-head{padding:19px 21px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel-title{font:600 15px 'Space Grotesk',sans-serif}
+.panel-sub{font-size:11px;color:var(--muted);margin-top:5px}
+.panel-body{padding:21px}
+.tag{font-size:10px;padding:6px 9px;border-radius:7px;background:#172b3d;color:#9bb2ca;white-space:nowrap}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.control{
+  background:#0d1929;border:1px solid #26384d;border-radius:13px;padding:16px;min-width:0;
+}
+.control-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.control-name{font-size:12px;font-weight:600}
+.control-icon{font-size:17px}
+.control-desc{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;min-height:30px}
+.toggle-row{display:flex;gap:7px;margin-top:14px}
+.toggle{
+  flex:1;padding:9px 6px;border-radius:8px;border:1px solid #2a3c51;
+  background:#142237;color:#9eb0c7;font-size:10px;font-weight:600;transition:.2s;
+}
+.toggle:hover{border-color:#4d718f}
+.toggle.selected.on{background:#12372e;color:#66e6b1;border-color:#28785b}
+.toggle.selected.off{background:#3a1d2a;color:#ff8b9b;border-color:#8a3b4d}
+.toggle.selected.neutral{background:#193246;color:#72dff2;border-color:#28667a}
+.control.full{grid-column:1/-1}
+.password-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.action-row{display:flex;gap:10px;margin-top:18px}
+.btn{
+  border-radius:9px;border:1px solid #2a4056;padding:11px 14px;
+  background:#16263a;color:#dce8f7;font-size:11px;font-weight:600;transition:.2s;
+}
+.btn:hover{filter:brightness(1.15)}
+.btn-primary{background:var(--cyan);color:#06202a;border-color:var(--cyan)}
+.btn-danger{background:#371d2a;border-color:#753648;color:#ff9aab}
+.outputs{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.output{
+  border-radius:13px;border:1px solid var(--border);padding:18px;background:#0c1727;
+  min-width:0;
+}
+.output-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.output-name{font-size:11px;color:#b4c4d8}
+.output-symbol{font-size:17px}
+.output-value{font:600 21px 'Space Grotesk',sans-serif;margin:19px 0 8px}
+.output-note{font-size:10px;color:var(--muted);line-height:1.5}
+.output.active-alarm{border-color:#803849;background:#261622;animation:pulse 1.7s infinite}
+.output.active-access{border-color:#276e55;background:#10251f}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #ff5d7310}50%{box-shadow:0 0 22px #ff5d7320}}
+.logic-note{font-size:11px;line-height:1.7;color:var(--muted);padding:14px;margin-top:14px;background:#0d1928;border-radius:10px;border:1px solid #22344a}
+.logic-note strong{color:#d9e8f8}
+.activity{margin-top:20px}
+.event-list{display:grid}
+.event{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:11px;align-items:start;padding:14px 0;border-bottom:1px solid #203047}
+.event:last-child{border-bottom:0;padding-bottom:0}
+.event-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#1b2d41;font-size:14px}
+.event strong{font-size:11px;font-weight:600;display:block;line-height:1.5}
+.event p{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5}
+.event time{font-size:10px;color:#7f94ad;white-space:nowrap}
+.empty{padding:20px 0;text-align:center;color:var(--muted);font-size:12px}
+.system-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:25px;padding-top:17px;border-top:1px solid var(--border);font-size:10px;color:#6d829b}
+.toast{
+  position:fixed;right:22px;bottom:22px;z-index:10;max-width:min(360px,calc(100vw - 32px));
+  background:#17283b;border:1px solid #36536e;color:#eaf4ff;padding:14px 17px;
+  border-radius:12px;box-shadow:0 12px 35px #0005;font-size:12px;
+  opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.mobile-menu{display:none}
+.view{display:none}
+.view.active{display:block}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+th{color:var(--muted);font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.6px}
+td{color:#dbe6f4}
+.status-badge{display:inline-block;border-radius:6px;padding:5px 7px;font-size:10px;background:#16362c;color:#6de4b1}
+.status-badge.alert{background:#3b202a;color:#ff8da0}
+.about-card{padding:23px;background:#0d1929;border:1px solid var(--border);border-radius:13px;margin-bottom:14px}
+.about-card h3{font:600 16px 'Space Grotesk',sans-serif;margin-bottom:9px}
+.about-card p,.about-card li{font-size:12px;color:var(--muted);line-height:1.9}
+.about-card ul{padding-left:20px;margin-top:10px}
+@media(max-width:1050px){
+ .sidebar{width:210px}main{padding:24px 20px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .content-grid{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+ .app{display:block}.sidebar{display:none;width:100%;border-right:0;border-bottom:1px solid var(--border);padding:18px}
+ .sidebar.mobile-open{display:flex}.mobile-menu{display:inline-grid;place-items:center;width:37px;height:37px;background:#132237;color:white;border:1px solid var(--border);border-radius:9px}
+ main{padding:18px 13px 25px}.topbar{margin-bottom:24px}
+ .top-right{gap:8px}.clock{display:none}.live-pill{font-size:10px;padding:8px}
+ .heading-row{align-items:flex-start}.date-label{display:none}
+ .banner{padding:17px}.banner-left{gap:12px}.shield{width:45px;height:45px;font-size:23px}
+ .banner h3{font-size:15px}.banner p{font-size:11px}.banner-state strong{font-size:16px}
+ .stats{gap:10px}.stat{padding:14px}.stat-number{font-size:25px}
+ .panel-head{padding:16px}.panel-body{padding:14px}
+ .controls{gap:9px}.control{padding:12px}.toggle{font-size:9px;padding:9px 3px}
+ .outputs{gap:9px}.output{padding:13px}.output-value{font-size:18px}
+ .system-footer{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:380px){
+ .stats{grid-template-columns:1fr 1fr}.control.full{grid-column:1/-1}
+ .control-name{font-size:11px}.banner-state{min-width:75px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">⬡</div>
+      <div><h1>SENTINEL</h1><p>SMART SECURITY</p></div>
+    </div>
+
+    <div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="nav">
+        <button class="active" data-view="dashboard"><span class="ico">▦</span> Overview</button>
+        <button data-view="activity"><span class="ico">◷</span> Event History</button>
+        <button data-view="devices"><span class="ico">⌘</span> System Status</button>
+        <button data-view="about"><span class="ico">ⓘ</span> About Project</button>
+      </nav>
+    </div>
+
+    <div class="side-bottom">
+      <div class="connection">
+        <div class="connection-head"><span class="dot"></span> Simulation Online</div>
+        <p>Browser-based demonstration is running. Physical sensors are not connected.</p>
+      </div>
+      <div class="side-foot">SENTINEL SECURITY<br>Mini Project · Verilog Logic Demo</div>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:11px">
+        <button class="mobile-menu" id="menuBtn" aria-label="Toggle menu">☰</button>
+        <div class="breadcrumb">Workspace / <strong id="crumb">Overview</strong></div>
+      </div>
+      <div class="top-right">
+        <div class="live-pill"><span class="dot"></span> SIMULATION ACTIVE</div>
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="profile" title="Administrator">AD</div>
+      </div>
+    </header>
+
+    <section class="view active" id="dashboard">
+      <div class="heading-row">
+        <div>
+          <div class="eyebrow">SECURITY OPERATIONS</div>
+          <h2>Security Overview</h2>
+          <p class="subtitle">Monitor your room, manage access and review system activity.</p>
+        </div>
+        <div class="date-label" id="dateLabel">Loading date...</div>
+      </div>
+
+      <div class="banner" id="banner">
+        <div class="banner-left">
+          <div class="shield" id="bannerIcon">⬡</div>
+          <div>
+            <h3 id="bannerTitle">Security system armed</h3>
+            <p id="bannerText">Monitoring access conditions and door status.</p>
+          </div>
+        </div>
+        <div class="banner-state">
+          <span>SYSTEM MODE</span>
+          <strong id="modeLabel">ARMED</strong>
+        </div>
+      </div>
+
+      <div class="stats">
+        <article class="stat">
+          <div class="stat-top"><span class="stat-label">System Mode</span><span class="stat-icon">⬡</span></div>
+          <div class="stat-number cyan" id="statMode">ARMED</div>
+          <div class="stat-foot" id="statModeFoot">Security monitoring enabled</div>
+        </article>
+        <article class="stat">
+          <div class="stat-top"><span class="stat-label">Alarm Output</span><span class="stat-icon">♢</span></div>
+          <div class="stat-number good" id="statAlarm">OFF</div>
+          <div class="stat-foot" id="statAlarmFoot">No alarm condition detected</div>
+        </article>
+        <article class="stat">
+          <div class="stat-top"><span class="stat-label">Access Control</span><span class="stat-icon">♙</span></div>
+          <div class="stat-number warn" id="statAccess">DENIED</div>
+          <div class="stat-foot" id="statAccessFoot">Awaiting access check</div>
+        </article>
+        <article class="stat">
+          <div class="stat-top"><span class="stat-label">Recorded Events</span><span class="stat-icon">≋</span></div>
+          <div class="stat-number" id="statEvents">0</div>
+          <div class="stat-foot">Events in this session</div>
+        </article>
+      </div>
+
+      <div class="content-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">Security Controls</div><div class="panel-sub">Change inputs to test the conditional logic</div></div>
+            <span class="tag">MANUAL CONTROL</span>
+          </div>
+          <div class="panel-body">
+            <div class="controls">
+              <div class="control">
+                <div class="control-top"><span class="control-name">System Power</span><span class="control-icon cyan">⏻</span></div>
+                <p class="control-desc">Enable or disable security monitoring.</p>
+                <div class="toggle-row">
+                  <button class="toggle selected on" id="armOn" aria-pressed="true">Armed</button>
+                  <button class="toggle" id="armOff" aria-pressed="false">Disarmed</button>
+                </div>
+              </div>
+              <div class="control">
+                <div class="control-top"><span class="control-name">Door Sensor</span><span class="control-icon warn">▣</span></div>
+                <p class="control-desc">Simulate the room door position.</p>
+                <div class="toggle-row">
+                  <button class="toggle selected off" id="doorClosed" aria-pressed="true">Closed</button>
+                  <button class="toggle" id="doorOpen" aria-pressed="false">Open</button>
+                </div>
+              </div>
+              <div class="control full">
+                <div class="control-top"><span class="control-name">Password Verification</span><span class="control-icon cyan">⌑</span></div>
+                <p class="control-desc">Choose a password result to test access control.</p>
+                <div class="toggle-row password-options">
+                  <button class="toggle selected on" id="passCorrect" aria-pressed="true">✓ Correct Password</button>
+                  <button class="toggle" id="passWrong" aria-pressed="false">✕ Wrong Password</button>
+                </div>
+              </div>
+            </div>
+            <div class="action-row">
+              <button class="btn btn-primary" id="evaluateBtn">▶ Evaluate System</button>
+              <button class="btn" id="resetBtn">↻ Reset Demo</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">Output Monitor</div><div class="panel-sub">Calculated from current inputs</div></div>
+            <span class="tag" id="outputTag">LIVE OUTPUT</span>
+          </div>
+          <div class="panel-body">
+            <div class="outputs">
+              <div class="output" id="alarmOutputCard">
+                <div class="output-top"><span class="output-name">Alarm Output</span><span class="output-symbol">♢</span></div>
+                <div class="output-value good" id="alarmValue">LOW · 0</div>
+                <div class="output-note" id="alarmNote">Alarm is inactive.</div>
+              </div>
+              <div class="output" id="accessOutputCard">
+                <div class="output-top"><span class="output-name">Access Granted</span><span class="output-symbol">♙</span></div>
+                <div class="output-value warn" id="accessValue">LOW · 0</div>
+                <div class="output-note" id="accessNote">Access has not been granted.</div>
+              </div>
+            </div>
+            <div class="logic-note">
+              <strong>Conditional Logic</strong><br>
+              If system is armed and door is open: correct password grants access; wrong password activates alarm. Otherwise both outputs remain LOW.
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel activity">
+        <div class="panel-head">
+          <div><div class="panel-title">Recent Activity</div><div class="panel-sub">Latest actions in this simulation</div></div>
+          <button class="btn" data-goto="activity">View all →</button>
+        </div>
+        <div class="panel-body"><div class="event-list" id="recentEvents"></div></div>
+      </section>
+    </section>
+
+    <section class="view" id="activity">
+      <div class="heading-row">
+        <div><div class="eyebrow">AUDIT TRAIL</div><h2>Event History</h2><p class="subtitle">Review actions recorded during this browser session.</p></div>
+        <button class="btn btn-danger" id="clearLogBtn">Clear History</button>
+      </div>
+      <section class="panel">
+        <div class="panel-head"><div><div class="panel-title">Activity Log</div><div class="panel-sub">Newest events appear first</div></div><span class="tag" id="historyCount">0 EVENTS</span></div>
+        <div class="panel-body table-wrap">
+          <table><thead><tr><th>Time</th><th>Event</th><th>Details</th><th>Result</th></tr></thead><tbody id="historyTable"></tbody></table>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="devices">
+      <div class="heading-row"><div><div class="eyebrow">SYSTEM DIAGNOSTICS</div><h2>System Status</h2><p class="subtitle">Current inputs and calculated outputs.</p></div></div>
+      <section class="panel">
+        <div class="panel-head"><div><div class="panel-title">Signal Monitor</div><div class="panel-sub">Logical signals used by the project</div></div><span class="tag">BOOLEAN</span></div>
+        <div class="panel-body table-wrap">
+          <table><thead><tr><th>Signal</th><th>Type</th><th>Current Value</th><th>Description</th></tr></thead><tbody id="signalsTable"></tbody></table>
+        </div>
+      </section>
+      <div class="logic-note" style="margin-top:17px"><strong>Integration status:</strong> Browser simulation only. This page does not read real sensors or execute the Verilog file. A backend or hardware interface is needed for physical device integration.</div>
+    </section>
+
+    <section class="view" id="about">
+      <div class="heading-row"><div><div class="eyebrow">PROJECT INFORMATION</div><h2>About Sentinel</h2><p class="subtitle">Smart Room Security System — conditional circuit demonstration.</p></div></div>
+      <div class="about-card">
+        <h3>Project Overview</h3>
+        <p>This mini-project demonstrates a smart room security system using conditional logic. The operator can simulate the armed state, door position and password verification, then observe the alarm and access-granted outputs.</p>
+      </div>
+      <div class="about-card">
+        <h3>Input Signals</h3>
+        <ul>
+          <li><strong>system_armed:</strong> Enables security monitoring.</li>
+          <li><strong>door_open:</strong> Represents the door sensor state.</li>
+          <li><strong>password_ok:</strong> Represents password verification.</li>
+        </ul>
+      </div>
+      <div class="about-card">
+        <h3>Output Rules</h3>
+        <ul>
+          <li>Armed + door open + correct password → access_granted = 1, alarm = 0.</li>
+          <li>Armed + door open + wrong password → alarm = 1, access_granted = 0.</li>
+          <li>System disarmed or door closed → both outputs = 0.</li>
+        </ul>
+      </div>
+      <div class="about-card">
+        <h3>Technology</h3>
+        <p>HTML, CSS and JavaScript provide the interactive dashboard. The logic mirrors the Verilog demonstration, but this webpage does not run the Icarus Verilog simulator directly.</p>
+      </div>
+    </section>
+
+    <footer class="system-footer">
+      <span>© 2026 SENTINEL SECURITY SYSTEM · EDUCATIONAL DEMO</span>
+      <span><span class="dot"></span> Browser simulation ready</span>
+    </footer>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+const state = {
+  armed: true,
+  doorOpen: false,
+  passwordOk: true,
+  alarm: false,
+  access: false,
+  events: []
+};
+
+const $ = id => document.getElementById(id);
+let toastTimer;
+
+function timeNow() {
+  return new Date().toLocaleTimeString([], {
+    hour: "2-digit", minute: "2-digit", second: "2-digit"
+  });
+}
+
+function updateClock() {
+  const now = new Date();
+  $("clock").textContent = now.toLocaleTimeString([], {
+    hour: "2-digit", minute: "2-digit", second: "2-digit"
+  });
+  $("dateLabel").textContent = now.toLocaleDateString([], {
+    weekday: "short", month: "short", day: "numeric", year: "numeric"
+  });
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+function notify(message) {
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2700);
+}
+
+function addEvent(title, details, result = "INFO", icon = "•") {
+  state.events.unshift({
+    time: timeNow(), title, details, result, icon
+  });
+  if (state.events.length > 150) state.events.length = 150;
+  renderEvents();
+}
+
+function calculateOutputs() {
+  if (state.armed && state.doorOpen) {
+    if (state.passwordOk) {
+      state.alarm = false;
+      state.access = true;
+    } else {
+      state.alarm = true;
+      state.access = false;
+    }
+  } else {
+    state.alarm = false;
+    state.access = false;
+  }
+}
+
+function setToggle(id, selected, type) {
+  const btn = $(id);
+  btn.classList.remove("selected", "on", "off", "neutral");
+  if (selected) {
+    btn.classList.add("selected", type);
+  }
+  btn.setAttribute("aria-pressed", String(selected));
+}
+
+function renderControls() {
+  setToggle("armOn", state.armed, "on");
+  setToggle("armOff", !state.armed, "off");
+  setToggle("doorClosed", !state.doorOpen, "neutral");
+  setToggle("doorOpen", state.doorOpen, "on");
+  setToggle("passCorrect", state.passwordOk, "on");
+  setToggle("passWrong", !state.passwordOk, "off");
+}
+
+function renderDashboard() {
+  $("banner").classList.toggle("disarmed", !state.armed);
+  $("bannerTitle").textContent = state.alarm
+    ? "Security alert detected"
+    : state.armed ? "Security system armed" : "Security system disarmed";
+
+  $("bannerText").textContent = state.alarm
+    ? "Incorrect password detected while the door is open."
+    : state.access ? "Password accepted. Access has been granted."
+    : state.armed ? "Monitoring access conditions and door status."
+    : "Monitoring is disabled until the system is armed.";
+
+  $("bannerIcon").textContent = state.alarm ? "⚠" : state.armed ? "⬡" : "◷";
+  $("modeLabel").textContent = state.armed ? "ARMED" : "DISARMED";
+  $("statMode").textContent = state.armed ? "ARMED" : "OFF";
+  $("statMode").className = "stat-number " + (state.armed ? "cyan" : "warn");
+  $("statModeFoot").textContent = state.armed ? "Security monitoring enabled" : "Monitoring disabled";
+
+  $("statAlarm").textContent = state.alarm ? "ON" : "OFF";
+  $("statAlarm").className = "stat-number " + (state.alarm ? "bad" : "good");
+  $("statAlarmFoot").textContent = state.alarm ? "Unauthorized access attempt" : "No alarm condition detected";
+
+  $("statAccess").textContent = state.access ? "GRANTED" : "DENIED";
+  $("statAccess").className = "stat-number " + (state.access ? "good" : "warn");
+  $("statAccessFoot").textContent = state.access ? "Password accepted" : "No access currently granted";
+  $("statEvents").textContent = state.events.length;
+
+  $("alarmValue").textContent = state.alarm ? "HIGH · 1" : "LOW · 0";
+  $("alarmValue").className = "output-value " + (state.alarm ? "bad" : "good");
+  $("alarmNote").textContent = state.alarm ? "Alarm condition active." : "Alarm is inactive.";
+  $("alarmOutputCard").classList.toggle("active-alarm", state.alarm);
+
+  $("accessValue").textContent = state.access ? "HIGH · 1" : "LOW · 0";
+  $("accessValue").className = "output-value " + (state.access ? "good" : "warn");
+  $("accessNote").textContent = state.access ? "Authorized access granted." : "Access has not been granted.";
+  $("accessOutputCard").classList.toggle("active-access", state.access);
+
+  renderControls();
+  renderSignals();
+}
+
+function renderEvents() {
+  const recent = $("recentEvents");
+  const list = state.events.slice(0, 5);
+  recent.innerHTML = list.length ? list.map(e => `
+    <div class="event">
+      <div class="event-icon">${escapeHtml(e.icon)}</div>
+      <div><strong>${escapeHtml(e.title)}</strong><p>${escapeHtml(e.details)}</p></div>
+      <time>${escapeHtml(e.time)}</time>
+    </div>
+  `).join("") : '<div class="empty">No events yet. Change a control to get started.</div>';
+
+  $("historyCount").textContent = state.events.length + " EVENTS";
+  $("historyTable").innerHTML = state.events.length ? state.events.map(e => `
+    <tr>
+      <td>${escapeHtml(e.time)}</td>
+      <td>${escapeHtml(e.title)}</td>
+      <td>${escapeHtml(e.details)}</td>
+      <td><span class="status-badge ${e.result === "ALERT" ? "alert" : ""}">${escapeHtml(e.result)}</span></td>
+    </tr>
+  `).join("") : '<tr><td colspan="4">No activity has been recorded.</td></tr>';
+
+  $("statEvents").textContent = state.events.length;
+}
+
+function renderSignals() {
+  const signals = [
+    ["system_armed", "INPUT", state.armed, "Security monitoring enable signal"],
+    ["door_open", "INPUT", state.doorOpen, "Door sensor state"],
+    ["password_ok", "INPUT", state.passwordOk, "Password verification result"],
+    ["alarm", "OUTPUT", state.alarm, "Alarm activation signal"],
+    ["access_granted", "OUTPUT", state.access, "Access permission signal"]
+  ];
+  $("signalsTable").innerHTML = signals.map(s => `
+    <tr>
+      <td>${s[0]}</td><td>${s[1]}</td>
+      <td><span class="status-badge ${s[2] ? (s[0] === "alarm" ? "alert" : "") : ""}">${s[2] ? "HIGH · 1" : "LOW · 0"}</span></td>
+      <td>${s[3]}</td>
+    </tr>
+  `).join("");
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  }[ch]));
+}
+
+function updateInput(key, value, label) {
+  state[key] = value;
+  calculateOutputs();
+  renderDashboard();
+  addEvent(label, "Control state changed.", "UPDATED", "⌘");
+  notify(label);
+}
+
+$("armOn").addEventListener("click", () => {
+  if (state.armed) return notify("System is already armed.");
+  updateInput("armed", true, "Security system armed");
+});
+$("armOff").addEventListener("click", () => {
+  if (!state.armed) return notify("System is already disarmed.");
+  updateInput("armed", false, "Security system disarmed");
+});
+$("doorClosed").addEventListener("click", () => {
+  if (!state.doorOpen) return notify("Door is already closed.");
+  updateInput("doorOpen", false, "Door closed");
+});
+$("doorOpen").addEventListener("click", () => {
+  if (state.doorOpen) return notify("Door is already open.");
+  updateInput("doorOpen", true, "Door opened");
+});
+$("passCorrect").addEventListener("click", () => {
+  if (state.passwordOk) return notify("Correct password selected.");
+  updateInput("passwordOk", true, "Correct password selected");
+});
+$("passWrong").addEventListener("click", () => {
+  if (!state.passwordOk) return notify("Wrong password selected.");
+  updateInput("passwordOk", false, "Wrong password selected");
+});
+
+$("evaluateBtn").addEventListener("click", () => {
+  calculateOutputs();
+  renderDashboard();
+
+  let title, details, result, icon;
+  if (state.alarm) {
+    title = "ALARM ACTIVATED";
+    details = "System armed, door open and password incorrect.";
+    result = "ALERT";
+    icon = "⚠";
+  } else if (state.access) {
+    title = "Access granted";
+    details = "System armed, door open and password correct.";
+    result = "SUCCESS";
+    icon = "✓";
+  } else {
+    title = "System evaluated";
+    details = !state.armed ? "System disarmed; outputs LOW."
+      : "Door closed; outputs LOW.";
+    result = "NORMAL";
+    icon = "●";
+  }
+  addEvent(title, details, result, icon);
+  notify(state.alarm ? "⚠ Alarm output HIGH" : state.access ? "✓ Access granted" : "System evaluated — outputs LOW");
+});
+
+$("resetBtn").addEventListener("click", () => {
+  state.armed = true;
+  state.doorOpen = false;
+  state.passwordOk = true;
+  calculateOutputs();
+  renderDashboard();
+  addEvent("Demo reset", "Inputs returned to their default values.", "RESET", "↻");
+  notify("Demo reset to default settings.");
+});
+
+$("clearLogBtn").addEventListener("click", () => {
+  state.events = [];
+  renderEvents();
+  renderDashboard();
+  notify("Activity history cleared.");
+});
+
+function showView(name) {
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  const target = $(name);
+  if (target) target.classList.add("active");
+
+  document.querySelectorAll(".nav button").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.view === name);
+  });
+
+  const labels = {
+    dashboard: "Overview",
+    activity: "Event History",
+    devices: "System Status",
+    about: "About Project"
+  };
+  $("crumb").textContent = labels[name] || "Overview";
+  $("sidebar").classList.remove("mobile-open");
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+document.querySelectorAll(".nav button").forEach(btn => {
+  btn.addEventListener("click", () => showView(btn.dataset.view));
+});
+document.querySelectorAll("[data-goto]").forEach(btn => {
+  btn.addEventListener("click", () => showView(btn.dataset.goto));
+});
+$("menuBtn").addEventListener("click", () => {
+  $("sidebar").classList.toggle("mobile-open");
+});
+
+calculateOutputs();
+renderDashboard();
+addEvent("System initialized", "Browser simulation started with default inputs.", "READY", "✓");
+</script>
+</body>
+</html>

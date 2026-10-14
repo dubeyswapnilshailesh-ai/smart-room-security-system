@@ -1,0 +1,40 @@
+$date
+	Mon Oct 12 22:11:17 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module security_system $end
+$var reg 1 ! access_granted $end
+$var reg 1 " alarm $end
+$var reg 1 # door_open $end
+$var reg 1 $ password_ok $end
+$var reg 1 % system_armed $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+1%
+0$
+0#
+0"
+0!
+$end
+#10
+1"
+1#
+#20
+1!
+0"
+1$
+#30
+0!
+0$
+0%
+#40
